@@ -22,7 +22,7 @@ public class JuegoLucha {
         System.out.println("\n Resultado final:");
         System.out.println(jugador1.getNombre() + ": " + jugador1.getPuntosDeVida() + " HP");
         System.out.println(jugador2.getNombre() + ": " + jugador2.getPuntosDeVida() + " HP");
-        System.out.println(jugador1.estaVivo() ? jugador1.getNombre() + " ganó la batalla " : jugador2.getNombre() + " ganó la batalla 🏆");
+        System.out.println(jugador1.estaVivo() ? jugador1.getNombre() + " ganó la batalla " : jugador2.getNombre() + " ganó la batalla ");
     }
 
     private void turno(Personaje atacante, Personaje defensor) {
