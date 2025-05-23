@@ -4,7 +4,13 @@
     // Para más información, visite: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        
+        {
+            "type": "java",
+            "name": "JuegoLucha",
+            "request": "launch",
+            "mainClass": "momento3.JuegoLucha",
+            "projectName": "jhon2007_fd5a5c4"
+        },
         {
             "type": "java",
             "name": "Current File",

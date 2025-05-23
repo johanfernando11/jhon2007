@@ -1,10 +1,20 @@
 package momento3;
+
 public abstract class Personaje {
     protected String nombre;
     protected int puntosDeVida = 100;
+    protected Arma arma;
 
     public Personaje(String nombre) {
         this.nombre = nombre;
+    }
+
+    public void equiparArma(Arma arma) {
+        this.arma = arma;
+    }
+
+    public Arma getArma() {
+        return arma;
     }
 
     public abstract void atacar(Personaje oponente);
