@@ -27,3 +27,6 @@ public class Arma {
     public static final Arma ARCO_LARGO = new Arma("Arco Largo", 15, 35);
     public static final Arma BALLESTA_LIGERA = new Arma("Ballesta Ligera", 10, 30);
 }
+//esta clase tiene tres atributos: nombre, daño mínimo y daño maximo
+//su funcion es generar un daño aleatorio dentro de ese rango cuando un personaje ataca
+//no hereda de nadie

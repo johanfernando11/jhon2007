@@ -36,3 +36,5 @@ public abstract class Personaje {
         return puntosDeVida;
     }
 }
+//es la clase base de todos los luchadores
+//tiene métodos para recibir daño, verificar si esta vivo, obtener su nombre y puntos de vida

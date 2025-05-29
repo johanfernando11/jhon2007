@@ -95,3 +95,6 @@ public class JuegoLucha {
         }
     }
 }
+//es el motor del juego.
+//tiene dos pesonajes jugador1 y jugador2
+//el metodo iniciarPelea se encarga de ejecutar los turnos de combate hasta que uno de los dos pierda toda su vida
