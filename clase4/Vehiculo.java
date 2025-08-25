@@ -24,6 +24,10 @@ public class Vehiculo {
         this.potencia = potencia;
     }
 
+    public Vehiculo(String chasis2, String marca2, int modelo, boolean matriculado) {
+        //TODO Auto-generated constructor stub
+    }
+
     // Métodos getter / setter
     public String getMarca() {
         return marca;
@@ -59,6 +63,16 @@ public class Vehiculo {
 
     public void retroceder(){
         System.out.println("Vehículo retrocediendo....");
+    }
+
+    public String mostrarInfo() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'mostrarInfo'");
+    }
+
+    public char[] iterarVehiculos(Vehiculo[] v) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'iterarVehiculos'");
     }
 
 }

@@ -1,12 +1,6 @@
 package momento3;
 
 import java.util.Scanner;
-import momento3.EspadaHierro;
-import momento3.HachaGuerra;
-import momento3.BastonFuego;
-import momento3.OrbeArcano;
-import momento3.ArcoLargo;
-import momento3.BallestaLigera;
 
 public class JuegoLucha {
     private Personaje jugador1;

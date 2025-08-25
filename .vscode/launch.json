@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "EjecutarVehiculo",
+            "request": "launch",
+            "mainClass": "EjecutarVehiculo",
+            "projectName": "jhon2007_fd5a5c4"
+        },
+        {
+            "type": "java",
             "name": "JuegoLucha",
             "request": "launch",
             "mainClass": "momento3.JuegoLucha",
