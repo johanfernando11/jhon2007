@@ -1,6 +1,6 @@
 {
-    "java.project.sourcePaths": [
-        "banco/src/com/banco"
-    ],
-    "java.project.outputPath": "bin"
+    "java.project.sourcePaths": ["src"],
+    "java.project.outputPath": "bin",
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.debug.settings.console": "integratedTerminal"
 }

@@ -1,0 +1,41 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "com.banco.Main",
+            "projectName": "SistemaBancario_59451b22"
+        },
+        {
+            "type": "java",
+            "name": "TestSistema",
+            "request": "launch",
+            "mainClass": "com.banco.TestSistema",
+            "projectName": "SistemaBancario_59451b22"
+        },
+        {
+            "type": "java",
+            "name": "🏦 Sistema Bancario (Menú)",
+            "request": "launch",
+            "mainClass": "com.banco.Main",
+            "projectName": "SistemaBancario",
+            "classPaths": [
+                "${workspaceFolder}/bin"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "type": "java",
+            "name": "🧪 Pruebas Automáticas",
+            "request": "launch",
+            "mainClass": "com.banco.TestSistema",
+            "projectName": "SistemaBancario",
+            "classPaths": [
+                "${workspaceFolder}/bin"
+            ],
+            "console": "integratedTerminal"
+        }
+    ]
+}

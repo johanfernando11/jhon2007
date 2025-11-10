@@ -1,0 +1,35 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Compilar Sistema Bancario",
+            "type": "shell",
+            "command": "javac",
+            "args": [
+                "-d",
+                "bin",
+                "-sourcepath",
+                "src",
+                "src/com/banco/modelos/*.java",
+                "src/com/banco/excepciones/*.java",
+                "src/com/banco/estructuras/*.java",
+                "src/com/banco/algoritmos/*.java",
+                "src/com/banco/utilidades/*.java",
+                "src/com/banco/servicios/*.java",
+                "src/com/banco/persistencia/*.java",
+                "src/com/banco/interfaz/*.java",
+                "src/com/banco/extras/*.java",
+                "src/com/banco/*.java"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            // No problemMatcher specified, as "$javac" is not supported
+        }
+    ]
+}
