@@ -8,7 +8,7 @@ import java.util.Locale;
 
 public class FormateadorDatos {
     private static final NumberFormat formatoMoneda = 
-        NumberFormat.getCurrencyInstance(new Locale("es", "CO"));
+        NumberFormat.getCurrencyInstance(Locale.forLanguageTag("es-CO"));
     private static final DateTimeFormatter formatoFecha = 
         DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
     
