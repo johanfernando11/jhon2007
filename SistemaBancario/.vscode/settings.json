@@ -1,6 +1,0 @@
-{
-    "java.project.sourcePaths": ["src"],
-    "java.project.outputPath": "bin",
-    "java.configuration.updateBuildConfiguration": "automatic",
-    "java.debug.settings.console": "integratedTerminal"
-}
