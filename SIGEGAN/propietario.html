@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<!--
+  SIGEGAN – Sistema Integral de Gestión Ganadera
+  propietario.html – Dashboard del Propietario
+  Solo puede ver SU información: su ganado, cobros, historial veterinario y alimentación.
+  NO puede ver datos de otros propietarios.
+-->
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIGEGAN – Propietario</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app-layout">
+
+  <!-- ══════════════════════════════════════
+       SIDEBAR – PROPIETARIO
+  ══════════════════════════════════════ -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-name"><span>🐄</span> SIGEGAN</div>
+      <div class="brand-sub">Gestión Ganadera</div>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar avatar-prop" id="user-avatar-initials">P</div>
+      <div class="user-info-sidebar">
+        <div class="name" id="sidebar-username">Propietario</div>
+        <div class="role-tag">Mi Panel Personal</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Mi Panel</div>
+      <div class="nav-item active" data-nav="dashboard">
+        <span class="nav-icon">📊</span><span>Mi Dashboard</span>
+      </div>
+      <div class="nav-item" data-nav="mi-ganado">
+        <span class="nav-icon">🐄</span><span>Mi Ganado</span>
+      </div>
+
+      <div class="nav-section-title">Historial</div>
+      <div class="nav-item" data-nav="mi-veterinario">
+        <span class="nav-icon">🩺</span><span>Historial Veterinario</span>
+      </div>
+      <div class="nav-item" data-nav="mi-alimentacion">
+        <span class="nav-icon">🌾</span><span>Historial Alimentación</span>
+      </div>
+
+      <div class="nav-section-title">Finanzas</div>
+      <div class="nav-item" data-nav="mis-cobros">
+        <span class="nav-icon">💰</span><span>Mis Cobros</span>
+      </div>
+      <div class="nav-item" data-nav="mis-pagos">
+        <span class="nav-icon">🧾</span><span>Historial de Pagos</span>
+      </div>
+
+      <div class="nav-section-title">Cuenta</div>
+      <div class="nav-item" data-nav="historial-cambios">
+        <span class="nav-icon">🕓</span><span>Mis Cambios</span>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button id="btn-logout" class="btn-logout">
+        <span>⏻</span> Cerrar Sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- ══════════════════════════════════════
+       CONTENIDO PRINCIPAL
+  ══════════════════════════════════════ -->
+  <main class="main-content">
+
+    <div class="top-bar">
+      <div>
+        <div class="top-bar-title" id="top-title">Mi Dashboard</div>
+        <div class="top-bar-sub">Propietario — Solo su información personal</div>
+      </div>
+      <div class="top-bar-right">
+        <button class="menu-toggle" id="menu-toggle">☰</button>
+        <div class="top-user-chip">
+          <span>🧑‍🌾</span>
+          <span id="topbar-name">Propietario</span>
+          <span class="role-badge role-prop">Propietario</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-area">
+
+      <!-- ─────────────────────────────────
+           SECCIÓN: DASHBOARD
+      ───────────────────────────────── -->
+      <div class="page-section active" id="sec-dashboard">
+        <div class="section-header">
+          <h2>📊 Mi Resumen</h2>
+          <p id="prop-bienvenida">Bienvenido a su panel personal</p>
+        </div>
+        <div class="cards-grid" id="prop-stats-grid"></div>
+
+        <!-- Cobro actual estimado -->
+        <div id="prop-cobro-actual"></div>
+
+        <!-- Mis lotes activos -->
+        <div class="card">
+          <div class="card-header"><h3>🐄 Mis Lotes Activos</h3></div>
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Lote</th><th>Cantidad</th><th>Fecha Ingreso</th><th>Días</th><th>Cobro Estimado</th></tr></thead>
+                <tbody id="prop-dash-lotes"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────
+           SECCIÓN: MI GANADO
+      ───────────────────────────────── -->
+      <div class="page-section" id="sec-mi-ganado">
+        <div class="section-header">
+          <h2>🐄 Mi Ganado</h2>
+          <p>Estado actual de todos sus animales en la hacienda</p>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>Lotes Activos</h3></div>
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Lote #</th><th>Cantidad</th><th>Fecha Ingreso</th><th>Días en Hacienda</th><th>Cobro Estimado</th><th>Estado</th></tr></thead>
+                <tbody id="ganado-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="card mt-4">
+          <div class="card-header"><h3>Lotes Retirados (Histórico)</h3></div>
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Lote</th><th>Cantidad</th><th>Ingreso</th><th>Salida</th><th>Días</th><th>Total Cobrado</th></tr></thead>
+                <tbody id="ganado-hist-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────
+           SECCIÓN: HISTORIAL VETERINARIO
+      ───────────────────────────────── -->
+      <div class="page-section" id="sec-mi-veterinario">
+        <div class="section-header">
+          <h2>🩺 Mi Historial Veterinario</h2>
+          <p>Revisiones y tratamientos aplicados a su ganado</p>
+        </div>
+        <div class="card">
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Fecha</th><th>Lote</th><th>Diagnóstico</th><th>Tratamiento</th><th>Veterinario</th></tr></thead>
+                <tbody id="vet-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────
+           SECCIÓN: HISTORIAL ALIMENTACIÓN
+      ───────────────────────────────── -->
+      <div class="page-section" id="sec-mi-alimentacion">
+        <div class="section-header">
+          <h2>🌾 Historial de Alimentación</h2>
+          <p>Registro de alimentos suministrados a su ganado</p>
+        </div>
+        <div class="card">
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Fecha</th><th>Lote</th><th>Tipo Alimento</th><th>Cantidad</th></tr></thead>
+                <tbody id="alim-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────
+           SECCIÓN: MIS COBROS
+      ───────────────────────────────── -->
+      <div class="page-section" id="sec-mis-cobros">
+        <div class="section-header">
+          <h2>💰 Mis Cobros Pendientes</h2>
+          <p>Valor estimado a cancelar por los servicios de la hacienda</p>
+        </div>
+        <div id="cobros-cards"></div>
+        <div class="card">
+          <div class="card-header"><h3>Detalle de Cobros por Lote Activo</h3></div>
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Lote</th><th>Cantidad</th><th>Días</th><th>Precio/día</th><th>Total Estimado</th></tr></thead>
+                <tbody id="cobros-detalle-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <p class="text-muted mt-4" style="font-size:0.8rem; font-style:italic;">
+          * El cobro final se calcula al momento del retiro del ganado: Cantidad × Días × Precio por animal/día.
+        </p>
+      </div>
+
+      <!-- ─────────────────────────────────
+           SECCIÓN: HISTORIAL DE PAGOS
+      ───────────────────────────────── -->
+      <div class="page-section" id="sec-mis-pagos">
+        <div class="section-header">
+          <h2>🧾 Historial de Pagos</h2>
+          <p>Pagos generados al retirar su ganado de la hacienda</p>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3>Pagos Realizados</h3>
+            <span class="badge badge-green" id="total-pagado-badge">Total: $0</span>
+          </div>
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Lote</th><th>Cantidad</th><th>Días</th><th>Total Pagado</th><th>Fecha</th></tr></thead>
+                <tbody id="pagos-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────
+           SECCIÓN: HISTORIAL DE CAMBIOS
+      ───────────────────────────────── -->
+      <div class="page-section" id="sec-historial-cambios">
+        <div class="section-header">
+          <h2>🕓 Mis Cambios</h2>
+          <p>Acciones registradas relacionadas con su cuenta</p>
+        </div>
+        <div class="card">
+          <div id="prop-historial-list"></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<div class="toast-container" id="toast-container"></div>
+
+<script src="script.js"></script>
+<script>
+/* ============================================================
+   propietario.js – Lógica del panel del propietario
+   IMPORTANTE: Toda la data está filtrada por propietarioId.
+   Un propietario NO puede ver información de otros.
+============================================================ */
+
+// Protege la página: solo propietarios pueden entrar
+const SESION = protegerPagina("propietario");
+
+// ID del propietario (vinculado desde la sesión)
+const PROP_ID = SESION ? SESION.propietarioId : null;
+
+// Si por algún error no hay propietarioId, redirige
+if (!PROP_ID) {
+  alert("Error de sesión. Contacte al administrador.");
+  cerrarSesion();
+}
+
+// Muestra el nombre del propietario en UI
+if (SESION) {
+  document.getElementById("sidebar-username").textContent = SESION.nombre;
+  document.getElementById("topbar-name").textContent = SESION.nombre;
+  document.getElementById("user-avatar-initials").textContent = SESION.nombre.charAt(0).toUpperCase();
+  document.getElementById("prop-bienvenida").textContent = `Bienvenido, ${SESION.nombre}`;
+}
+
+/* ── DATOS FILTRADOS SOLO DEL PROPIETARIO ── */
+function getMisLotesActivos() {
+  return DB.lotes.filter(l => l.propietarioId === PROP_ID && l.estado === "activo");
+}
+function getMisSalidas() {
+  return DB.salidas.filter(s => s.propietarioId === PROP_ID);
+}
+function getMisVeterinario() {
+  return DB.veterinario.filter(r => r.propietarioId === PROP_ID);
+}
+function getMiAlimentacion() {
+  return DB.alimentacion.filter(r => r.propietarioId === PROP_ID);
+}
+
+function emptyRow(cols, msg) {
+  return `<tr><td colspan="${cols}" style="text-align:center;padding:28px;color:var(--gris-claro);">${msg}</td></tr>`;
+}
+
+/* ── DASHBOARD DEL PROPIETARIO ── */
+function renderDashboard() {
+  const lotes    = getMisLotesActivos();
+  const salidas  = getMisSalidas();
+  const animales = lotes.reduce((s, l) => s + l.cantidad, 0);
+  const estimado = lotes.reduce((s, l) => s + l.cantidad * calcDias(l.fechaIngreso) * DB.precioAnimalDia, 0);
+  const pagado   = salidas.reduce((s, x) => s + x.total, 0);
+
+  document.getElementById("prop-stats-grid").innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">Mis Animales Activos</div>
+      <div class="stat-value">${animales}</div>
+      <div class="stat-sub">en la hacienda ahora</div>
+      <span class="stat-icon">🐄</span>
+    </div>
+    <div class="stat-card brown">
+      <div class="stat-label">Mis Lotes Activos</div>
+      <div class="stat-value">${lotes.length}</div>
+      <div class="stat-sub">lotes registrados</div>
+      <span class="stat-icon">📦</span>
+    </div>
+    <div class="stat-card warn">
+      <div class="stat-label">Cobro Estimado</div>
+      <div class="stat-value" style="font-size:1.4rem">${formatMoney(estimado)}</div>
+      <div class="stat-sub">valor aproximado actual</div>
+      <span class="stat-icon">💰</span>
+    </div>
+    <div class="stat-card info">
+      <div class="stat-label">Total Pagado</div>
+      <div class="stat-value" style="font-size:1.4rem">${formatMoney(pagado)}</div>
+      <div class="stat-sub">${salidas.length} retiro(s)</div>
+      <span class="stat-icon">🧾</span>
+    </div>`;
+
+  // Cobro actual destacado
+  document.getElementById("prop-cobro-actual").innerHTML = estimado > 0 ? `
+    <div class="cobro-highlight" style="margin-bottom:20px;">
+      <div class="label">Cobro Estimado Actual (Lotes Activos)</div>
+      <div class="amount">${formatMoney(estimado)}</div>
+      <div class="formula">Se calcula al momento del retiro: Cantidad × Días × ${formatMoney(DB.precioAnimalDia)}/día</div>
+    </div>` : "";
+
+  // Mis lotes en dashboard
+  document.getElementById("prop-dash-lotes").innerHTML = lotes.length
+    ? lotes.map(l => {
+        const dias   = calcDias(l.fechaIngreso);
+        const cobro  = l.cantidad * dias * DB.precioAnimalDia;
+        return `<tr>
+          <td><span class="badge badge-green">Lote #${l.id}</span></td>
+          <td style="font-weight:700">${l.cantidad}</td>
+          <td>${formatFecha(l.fechaIngreso)}</td>
+          <td><span class="badge badge-brown">${dias} días</span></td>
+          <td style="font-weight:700; color:var(--warning)">${formatMoney(cobro)}</td>
+        </tr>`;
+      }).join("")
+    : emptyRow(5, "🐄 No tiene lotes activos en este momento");
+}
+
+/* ── MI GANADO ── */
+function renderMiGanado() {
+  const activos = getMisLotesActivos();
+  document.getElementById("ganado-tbody").innerHTML = activos.length
+    ? activos.map(l => {
+        const dias  = calcDias(l.fechaIngreso);
+        const cobro = l.cantidad * dias * DB.precioAnimalDia;
+        return `<tr>
+          <td><span class="badge badge-green">#${l.id}</span></td>
+          <td style="font-weight:700">${l.cantidad}</td>
+          <td>${formatFecha(l.fechaIngreso)}</td>
+          <td><span class="badge badge-brown">${dias} días</span></td>
+          <td style="font-weight:700;color:var(--warning)">${formatMoney(cobro)}</td>
+          <td><span class="badge badge-green">Activo</span></td>
+        </tr>`;
+      }).join("")
+    : emptyRow(6, "🐄 No tiene animales activos");
+
+  const salidas = getMisSalidas();
+  document.getElementById("ganado-hist-tbody").innerHTML = salidas.length
+    ? salidas.slice().reverse().map(s => `<tr>
+        <td><span class="badge badge-brown">Lote #${s.loteId}</span></td>
+        <td>${s.cantidad}</td>
+        <td>${formatFecha(s.fechaSalida)}</td>
+        <td>—</td>
+        <td><span class="badge badge-blue">${s.dias} días</span></td>
+        <td style="font-weight:700;color:var(--success)">${formatMoney(s.total)}</td>
+      </tr>`).join("")
+    : emptyRow(6, "Sin retiros históricos");
+}
+
+/* ── HISTORIAL VETERINARIO ── */
+function renderVeterinario() {
+  const lista = getMisVeterinario();
+  document.getElementById("vet-tbody").innerHTML = lista.length
+    ? lista.slice().reverse().map(r => `<tr>
+        <td>${formatFecha(r.fecha)}</td>
+        <td><span class="badge badge-green">Lote #${r.loteId}</span></td>
+        <td>${r.diagnostico}</td>
+        <td>${r.tratamiento}</td>
+        <td>${r.veterinario}</td>
+      </tr>`).join("")
+    : emptyRow(5, "🩺 Sin registros veterinarios para su ganado");
+}
+
+/* ── HISTORIAL ALIMENTACIÓN ── */
+function renderAlimentacion() {
+  const lista = getMiAlimentacion();
+  document.getElementById("alim-tbody").innerHTML = lista.length
+    ? lista.slice().reverse().map(r => `<tr>
+        <td>${formatFecha(r.fecha)}</td>
+        <td><span class="badge badge-green">Lote #${r.loteId}</span></td>
+        <td>${r.tipo}</td>
+        <td class="mono">${r.cantidad} ${r.unidad}</td>
+      </tr>`).join("")
+    : emptyRow(4, "🌾 Sin registros de alimentación para su ganado");
+}
+
+/* ── MIS COBROS ── */
+function renderMisCobros() {
+  const lotes    = getMisLotesActivos();
+  const estimado = lotes.reduce((s, l) => s + l.cantidad * calcDias(l.fechaIngreso) * DB.precioAnimalDia, 0);
+  document.getElementById("cobros-cards").innerHTML = `
+    <div class="cobro-highlight" style="margin-bottom:20px;">
+      <div class="label">Total Estimado a Pagar (Lotes Activos)</div>
+      <div class="amount">${formatMoney(estimado)}</div>
+      <div class="formula">Precio: ${formatMoney(DB.precioAnimalDia)} por animal por día</div>
+    </div>`;
+  document.getElementById("cobros-detalle-tbody").innerHTML = lotes.length
+    ? lotes.map(l => {
+        const dias  = calcDias(l.fechaIngreso);
+        const total = l.cantidad * dias * DB.precioAnimalDia;
+        return `<tr>
+          <td><span class="badge badge-green">Lote #${l.id}</span></td>
+          <td>${l.cantidad}</td>
+          <td><span class="badge badge-brown">${dias} días</span></td>
+          <td class="mono">${formatMoney(DB.precioAnimalDia)}</td>
+          <td style="font-weight:700;color:var(--warning)">${formatMoney(total)}</td>
+        </tr>`;
+      }).join("")
+    : emptyRow(5, "Sin lotes activos");
+}
+
+/* ── HISTORIAL DE PAGOS ── */
+function renderMisPagos() {
+  const salidas = getMisSalidas();
+  const total   = salidas.reduce((s, x) => s + x.total, 0);
+  document.getElementById("total-pagado-badge").textContent = `Total: ${formatMoney(total)}`;
+  document.getElementById("pagos-tbody").innerHTML = salidas.length
+    ? salidas.slice().reverse().map(s => `<tr>
+        <td><span class="badge badge-brown">Lote #${s.loteId}</span></td>
+        <td>${s.cantidad}</td>
+        <td><span class="badge badge-blue">${s.dias} días</span></td>
+        <td style="font-weight:700;color:var(--success)">${formatMoney(s.total)}</td>
+        <td>${formatFecha(s.fechaSalida)}</td>
+      </tr>`).join("")
+    : emptyRow(5, "Sin pagos registrados");
+}
+
+/* ── HISTORIAL DE CAMBIOS ── */
+function renderHistorialCambios() {
+  // Filtra solo las acciones del propio propietario
+  const lista = DB.historial.filter(h => h.usuario === SESION.usuario);
+  document.getElementById("prop-historial-list").innerHTML = lista.length
+    ? lista.map(h => `
+        <div class="history-item">
+          <div class="history-dot"></div>
+          <div class="history-content">
+            <div class="history-action">${h.accion}</div>
+            <div class="history-detail">${h.detalle}</div>
+          </div>
+          <div class="history-date">${h.fecha}</div>
+        </div>`).join("")
+    : `<div class="empty-state"><div class="empty-icon">🕓</div><p>Sin actividad registrada</p></div>`;
+}
+
+/* ── INIT ── */
+function inicializar() {
+  logHistorial("Consulta", `${SESION.nombre} consultó su panel de propietario`);
+  renderDashboard();
+
+  document.querySelectorAll(".nav-item[data-nav]").forEach(item => {
+    item.addEventListener("click", () => {
+      const id = item.dataset.nav;
+      if (id === "dashboard")        renderDashboard();
+      if (id === "mi-ganado")        renderMiGanado();
+      if (id === "mi-veterinario")   renderVeterinario();
+      if (id === "mi-alimentacion")  renderAlimentacion();
+      if (id === "mis-cobros")       renderMisCobros();
+      if (id === "mis-pagos")        renderMisPagos();
+      if (id === "historial-cambios")renderHistorialCambios();
+    });
+  });
+}
+
+inicializar();
+</script>
+
+</body>
+</html>

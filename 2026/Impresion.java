@@ -9,7 +9,7 @@ public class Impresion extends Producto {
     private List<Foto> fotos; 
 
     public Impresion(int numero, String color) {
-        super(numero);
+        super(numero, color, numero, numero);
         this.color = color;
         this.fotos = new ArrayList<>();
     }

@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<!--
+  SIGEGAN – Sistema Integral de Gestión Ganadera
+  veterinario.html – Dashboard del Veterinario
+  Puede: ver ganado, registrar revisiones, alimentación, generar reportes.
+  NO puede: ver finanzas generales ni datos administrativos.
+-->
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIGEGAN – Veterinario</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app-layout">
+
+  <!-- ══════════════════════════════════════
+       SIDEBAR – VETERINARIO
+  ══════════════════════════════════════ -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-name"><span>🐄</span> SIGEGAN</div>
+      <div class="brand-sub">Gestión Ganadera</div>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar avatar-vet" id="user-avatar-initials">V</div>
+      <div class="user-info-sidebar">
+        <div class="name" id="sidebar-username">Veterinario</div>
+        <div class="role-tag">Módulo Veterinario</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Principal</div>
+      <div class="nav-item active" data-nav="dashboard">
+        <span class="nav-icon">📊</span><span>Mi Dashboard</span>
+      </div>
+      <div class="nav-item" data-nav="ganado">
+        <span class="nav-icon">🐄</span><span>Listado de Ganado</span>
+      </div>
+
+      <div class="nav-section-title">Registros</div>
+      <div class="nav-item" data-nav="control-vet">
+        <span class="nav-icon">💉</span><span>Control Veterinario</span>
+      </div>
+      <div class="nav-item" data-nav="alimentacion">
+        <span class="nav-icon">🌾</span><span>Registrar Alimentación</span>
+      </div>
+
+      <div class="nav-section-title">Reportes</div>
+      <div class="nav-item" data-nav="mis-reportes">
+        <span class="nav-icon">📋</span><span>Mis Reportes</span>
+      </div>
+      <div class="nav-item" data-nav="mis-servicios">
+        <span class="nav-icon">💵</span><span>Mis Servicios</span>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button id="btn-logout" class="btn-logout">
+        <span>⏻</span> Cerrar Sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- ══════════════════════════════════════
+       CONTENIDO PRINCIPAL
+  ══════════════════════════════════════ -->
+  <main class="main-content">
+
+    <div class="top-bar">
+      <div>
+        <div class="top-bar-title" id="top-title">Mi Dashboard</div>
+        <div class="top-bar-sub">Veterinario — Control sanitario y alimentación</div>
+      </div>
+      <div class="top-bar-right">
+        <button class="menu-toggle" id="menu-toggle">☰</button>
+        <div class="top-user-chip">
+          <span>🩺</span>
+          <span id="topbar-name">Veterinario</span>
+          <span class="role-badge role-vet">Veterinario</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-area">
+
+      <!-- ─────────────────────────────────
+           SECCIÓN: DASHBOARD VETERINARIO
+      ───────────────────────────────── -->
+      <div class="page-section active" id="sec-dashboard">
+        <div class="section-header">
+          <h2>📊 Panel Veterinario</h2>
+          <p id="vet-bienvenida">Bienvenido al módulo veterinario</p>
+        </div>
+        <div class="cards-grid" id="vet-stats-grid"></div>
+        <div class="cards-grid-2" style="margin-top:20px;">
+          <div class="card">
+            <div class="card-header"><h3>💉 Últimas Revisiones</h3></div>
+            <div id="dash-ultimas-revisiones"></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>🌾 Última Alimentación</h3></div>
+            <div id="dash-ultima-alim"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────
+           SECCIÓN: LISTADO DE GANADO
+      ───────────────────────────────── -->
+      <div class="page-section" id="sec-ganado">
+        <div class="section-header">
+          <h2>🐄 Listado de Ganado</h2>
+          <p>Todos los animales actualmente en la hacienda</p>
+        </div>
+        <div class="card">
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Lote #</th><th>Propietario</th><th>Cantidad</th><th>Fecha Ingreso</th><th>Días</th><th>Estado</th></tr></thead>
+                <tbody id="ganado-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────
+           SECCIÓN: CONTROL VETERINARIO
+      ───────────────────────────────── -->
+      <div class="page-section" id="sec-control-vet">
+        <div class="section-header">
+          <h2>💉 Registrar Control Veterinario</h2>
+          <p>Ingrese el diagnóstico y tratamiento aplicado al ganado</p>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>📝 Nueva Revisión</h3></div>
+          <div class="card-body">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Lote a Revisar</label>
+                <select id="v-lote"></select>
+              </div>
+              <div class="form-group">
+                <label>Fecha de Revisión</label>
+                <input type="date" id="v-fecha">
+              </div>
+              <div class="form-group">
+                <label>Diagnóstico</label>
+                <input type="text" id="v-diagnostico" placeholder="Ej. Estado general bueno">
+              </div>
+              <div class="form-group">
+                <label>Tratamiento Aplicado</label>
+                <input type="text" id="v-tratamiento" placeholder="Ej. Vitaminas A y B12">
+              </div>
+              <div class="form-group">
+                <label>Costo del Servicio ($)</label>
+                <input type="number" id="v-costo" placeholder="0" min="0">
+              </div>
+            </div>
+            <div class="form-group" style="margin-top:12px;">
+              <label>Observaciones Adicionales</label>
+              <textarea id="v-obs" placeholder="Notas adicionales sobre el estado del ganado..."></textarea>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-secondary btn-sm" onclick="limpiarFormVet()">Limpiar</button>
+              <button class="btn btn-primary btn-sm" onclick="registrarRevision()">💾 Guardar Revisión</button>
+              <button class="btn btn-primary btn-sm" style="background:linear-gradient(135deg,var(--marron),var(--marron-claro));" onclick="enviarReporteVet()">📤 Enviar Reporte</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Historial de revisiones del veterinario activo -->
+        <div class="card mt-4">
+          <div class="card-header"><h3>Mis Revisiones Registradas</h3></div>
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Fecha</th><th>Lote</th><th>Propietario</th><th>Diagnóstico</th><th>Tratamiento</th><th>Costo</th></tr></thead>
+                <tbody id="mis-revisiones-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────
+           SECCIÓN: ALIMENTACIÓN
+      ───────────────────────────────── -->
+      <div class="page-section" id="sec-alimentacion">
+        <div class="section-header">
+          <h2>🌾 Registrar Alimentación</h2>
+          <p>Ingrese el suministro de alimentos al ganado</p>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>📝 Nuevo Registro de Alimentación</h3></div>
+          <div class="card-body">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Lote</label>
+                <select id="a-lote"></select>
+              </div>
+              <div class="form-group">
+                <label>Tipo de Alimento</label>
+                <select id="a-tipo">
+                  <option>Pasto Natural</option>
+                  <option>Concentrado</option>
+                  <option>Forraje</option>
+                  <option>Sal Mineralizada</option>
+                  <option>Melaza</option>
+                  <option>Heno</option>
+                  <option>Ensilaje</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Cantidad</label>
+                <input type="number" id="a-cantidad" placeholder="0" min="1">
+              </div>
+              <div class="form-group">
+                <label>Unidad</label>
+                <select id="a-unidad">
+                  <option value="kg">Kilogramos (kg)</option>
+                  <option value="ton">Toneladas (ton)</option>
+                  <option value="lb">Libras (lb)</option>
+                  <option value="L">Litros (L)</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-secondary btn-sm" onclick="limpiarForm(['a-cantidad'])">Limpiar</button>
+              <button class="btn btn-primary btn-sm" onclick="registrarAlimentacion()">💾 Registrar Alimentación</button>
+            </div>
+          </div>
+        </div>
+        <div class="card mt-4">
+          <div class="card-header"><h3>Historial de Alimentación Registrado</h3></div>
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Fecha</th><th>Lote</th><th>Propietario</th><th>Tipo</th><th>Cantidad</th></tr></thead>
+                <tbody id="alim-hist-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────
+           SECCIÓN: MIS REPORTES
+      ───────────────────────────────── -->
+      <div class="page-section" id="sec-mis-reportes">
+        <div class="section-header">
+          <h2>📋 Mis Reportes Veterinarios</h2>
+          <p>Resumen de la actividad veterinaria registrada</p>
+        </div>
+        <div class="cards-grid" id="vet-rep-stats"></div>
+        <div class="cards-grid-2" style="margin-top:20px;">
+          <div class="card">
+            <div class="card-header"><h3>🐄 Estado del Ganado por Propietario</h3></div>
+            <div class="card-body" style="padding:0">
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>Propietario</th><th>Lotes</th><th>Animales</th><th>Revisiones</th></tr></thead>
+                  <tbody id="rep-ganado-prop-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>💉 Resumen de Tratamientos</h3></div>
+            <div class="card-body" style="padding:0">
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>Fecha</th><th>Propietario</th><th>Diagnóstico</th></tr></thead>
+                  <tbody id="rep-tratamientos-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-actions" style="border:none; padding:0; margin-top:8px;">
+          <button class="btn btn-primary" onclick="enviarReporteCompleto()">📤 Enviar Reporte al Administrador</button>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────
+           SECCIÓN: MIS SERVICIOS
+      ───────────────────────────────── -->
+      <div class="page-section" id="sec-mis-servicios">
+        <div class="section-header">
+          <h2>💵 Mis Servicios Prestados</h2>
+          <p>Valor de los servicios registrados para cobro al administrador</p>
+        </div>
+        <div id="mis-servicios-cobro"></div>
+        <div class="card">
+          <div class="card-header"><h3>Detalle de Servicios</h3></div>
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Fecha</th><th>Propietario Atendido</th><th>Diagnóstico</th><th>Costo Registrado</th></tr></thead>
+                <tbody id="servicios-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <p class="text-muted mt-4" style="font-size:0.8rem; font-style:italic;">
+          * El administrador puede ver el total de sus servicios para gestionar el pago correspondiente.
+        </p>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<div class="toast-container" id="toast-container"></div>
+
+<script src="script.js"></script>
+<script>
+/* ============================================================
+   veterinario.js – Lógica del panel veterinario
+   Puede: ver ganado, registrar revisiones/alimentación, reportes.
+   NO puede: ver finanzas generales del sistema.
+============================================================ */
+
+// Protege la página: solo veterinarios pueden entrar
+const SESION = protegerPagina("veterinario");
+
+// Muestra el nombre del veterinario
+if (SESION) {
+  document.getElementById("sidebar-username").textContent = SESION.nombre;
+  document.getElementById("topbar-name").textContent = SESION.nombre;
+  document.getElementById("user-avatar-initials").textContent = SESION.nombre.charAt(0).toUpperCase();
+  document.getElementById("vet-bienvenida").textContent = `Bienvenido, ${SESION.nombre}`;
+}
+
+function limpiarForm(ids) { ids.forEach(id => { const el = document.getElementById(id); if (el) el.value = ""; }); }
+function limpiarFormVet() { limpiarForm(["v-diagnostico","v-tratamiento","v-costo","v-obs"]); }
+
+function emptyRow(cols, msg) {
+  return `<tr><td colspan="${cols}" style="text-align:center;padding:28px;color:var(--gris-claro);">${msg}</td></tr>`;
+}
+
+/* Obtiene las revisiones del veterinario activo */
+function getMisRevisiones() {
+  return DB.veterinario.filter(r => r.veterinario === SESION.nombre);
+}
+
+/* ── DASHBOARD VETERINARIO ── */
+function renderDashboard() {
+  const activos    = DB.lotes.filter(l => l.estado === "activo");
+  const revisiones = getMisRevisiones();
+  const totalCosto = revisiones.reduce((s, r) => s + r.costo, 0);
+
+  document.getElementById("vet-stats-grid").innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">Lotes Activos</div>
+      <div class="stat-value">${activos.length}</div>
+      <div class="stat-sub">en la hacienda</div>
+      <span class="stat-icon">🐄</span>
+    </div>
+    <div class="stat-card brown">
+      <div class="stat-label">Animales a Cuidar</div>
+      <div class="stat-value">${activos.reduce((s, l) => s + l.cantidad, 0)}</div>
+      <div class="stat-sub">animales activos</div>
+      <span class="stat-icon">📦</span>
+    </div>
+    <div class="stat-card info">
+      <div class="stat-label">Mis Revisiones</div>
+      <div class="stat-value">${revisiones.length}</div>
+      <div class="stat-sub">registradas</div>
+      <span class="stat-icon">💉</span>
+    </div>
+    <div class="stat-card warn">
+      <div class="stat-label">Mis Servicios</div>
+      <div class="stat-value" style="font-size:1.4rem">${formatMoney(totalCosto)}</div>
+      <div class="stat-sub">total a cobrar</div>
+      <span class="stat-icon">💵</span>
+    </div>`;
+
+  // Últimas revisiones (3)
+  const ultRev = revisiones.slice(-3).reverse();
+  document.getElementById("dash-ultimas-revisiones").innerHTML = ultRev.length
+    ? ultRev.map(r => `
+        <div class="history-item">
+          <div class="history-dot"></div>
+          <div class="history-content">
+            <div class="history-action">Lote #${r.loteId} — ${r.propietarioNombre}</div>
+            <div class="history-detail">${r.diagnostico}</div>
+          </div>
+          <div class="history-date">${formatFecha(r.fecha)}</div>
+        </div>`).join("")
+    : `<div class="empty-state" style="padding:24px;"><div class="empty-icon">💉</div><p>Sin revisiones registradas</p></div>`;
+
+  // Últimas alimentaciones (3)
+  const ultAlim = DB.alimentacion.slice(-3).reverse();
+  document.getElementById("dash-ultima-alim").innerHTML = ultAlim.length
+    ? ultAlim.map(r => `
+        <div class="history-item">
+          <div class="history-dot" style="background:var(--verde-claro)"></div>
+          <div class="history-content">
+            <div class="history-action">Lote #${r.loteId} — ${r.propietarioNombre}</div>
+            <div class="history-detail">${r.tipo}: ${r.cantidad} ${r.unidad}</div>
+          </div>
+          <div class="history-date">${formatFecha(r.fecha)}</div>
+        </div>`).join("")
+    : `<div class="empty-state" style="padding:24px;"><div class="empty-icon">🌾</div><p>Sin registros de alimentación</p></div>`;
+}
+
+/* ── LISTADO DE GANADO ── */
+function renderGanado() {
+  const activos = DB.lotes.filter(l => l.estado === "activo");
+  document.getElementById("ganado-tbody").innerHTML = activos.length
+    ? activos.map(l => `<tr>
+        <td><span class="badge badge-green">#${l.id}</span></td>
+        <td style="font-weight:600">${l.propietarioNombre}</td>
+        <td style="font-weight:700">${l.cantidad}</td>
+        <td>${formatFecha(l.fechaIngreso)}</td>
+        <td><span class="badge badge-brown">${calcDias(l.fechaIngreso)} días</span></td>
+        <td><span class="badge badge-green">Activo</span></td>
+      </tr>`).join("")
+    : emptyRow(6, "🐄 No hay lotes activos en la hacienda");
+}
+
+/* ── CONTROL VETERINARIO ── */
+function registrarRevision() {
+  const loteId = parseInt(document.getElementById("v-lote").value);
+  const fecha  = document.getElementById("v-fecha").value;
+  const diag   = document.getElementById("v-diagnostico").value.trim();
+  const trat   = document.getElementById("v-tratamiento").value.trim();
+  const costo  = parseFloat(document.getElementById("v-costo").value) || 0;
+
+  if (!loteId) return showToast("Selecciona un lote", "warn");
+  if (!fecha)  return showToast("Selecciona la fecha", "warn");
+  if (!diag)   return showToast("El diagnóstico es obligatorio", "warn");
+
+  const lote = DB.lotes.find(l => l.id === loteId);
+  DB.veterinario.push({
+    id: Date.now(),
+    loteId,
+    propietarioId:     lote.propietarioId,
+    propietarioNombre: lote.propietarioNombre,
+    fecha,
+    diagnostico: diag,
+    tratamiento: trat || "Sin tratamiento",
+    veterinario: SESION.nombre,
+    costo
+  });
+  guardarDB();
+  logHistorial("Control veterinario", `${SESION.nombre} revisó Lote #${loteId} (${lote.propietarioNombre}): ${diag}`);
+  renderMisRevisiones();
+  renderDashboard();
+  limpiarFormVet();
+  showToast("✅ Revisión veterinaria registrada");
+}
+
+function renderMisRevisiones() {
+  const lista = getMisRevisiones();
+  document.getElementById("mis-revisiones-tbody").innerHTML = lista.length
+    ? lista.slice().reverse().map(r => `<tr>
+        <td>${formatFecha(r.fecha)}</td>
+        <td><span class="badge badge-green">Lote #${r.loteId}</span></td>
+        <td>${r.propietarioNombre}</td>
+        <td>${r.diagnostico}</td>
+        <td>${r.tratamiento}</td>
+        <td style="font-weight:700">${formatMoney(r.costo)}</td>
+      </tr>`).join("")
+    : emptyRow(6, "Sin revisiones registradas aún");
+}
+
+function enviarReporteVet() {
+  logHistorial("Reporte veterinario", `${SESION.nombre} envió reporte de control veterinario`);
+  showToast("📤 Reporte enviado al administrador y propietario");
+}
+
+/* ── ALIMENTACIÓN ── */
+function registrarAlimentacion() {
+  const loteId   = parseInt(document.getElementById("a-lote").value);
+  const tipo     = document.getElementById("a-tipo").value;
+  const cantidad = parseFloat(document.getElementById("a-cantidad").value);
+  const unidad   = document.getElementById("a-unidad").value;
+
+  if (!loteId)   return showToast("Selecciona un lote", "warn");
+  if (!cantidad || cantidad < 1) return showToast("Ingresa una cantidad válida", "warn");
+
+  const lote = DB.lotes.find(l => l.id === loteId);
+  DB.alimentacion.push({
+    id: Date.now(),
+    loteId,
+    propietarioId:     lote.propietarioId,
+    propietarioNombre: lote.propietarioNombre,
+    fecha: hoy(),
+    tipo,
+    cantidad,
+    unidad
+  });
+  guardarDB();
+  logHistorial("Alimentación", `${SESION.nombre} registró ${cantidad}${unidad} de ${tipo} para Lote #${loteId}`);
+  renderAlimHist();
+  renderDashboard();
+  limpiarForm(["a-cantidad"]);
+  showToast("✅ Alimentación registrada");
+}
+
+function renderAlimHist() {
+  document.getElementById("alim-hist-tbody").innerHTML = DB.alimentacion.length
+    ? DB.alimentacion.slice().reverse().map(r => `<tr>
+        <td>${formatFecha(r.fecha)}</td>
+        <td><span class="badge badge-green">Lote #${r.loteId}</span></td>
+        <td>${r.propietarioNombre}</td>
+        <td>${r.tipo}</td>
+        <td class="mono">${r.cantidad} ${r.unidad}</td>
+      </tr>`).join("")
+    : emptyRow(5, "Sin registros de alimentación");
+}
+
+/* ── MIS REPORTES ── */
+function renderMisReportes() {
+  const revisiones = getMisRevisiones();
+  const totalCosto = revisiones.reduce((s, r) => s + r.costo, 0);
+  const lotes      = DB.lotes.filter(l => l.estado === "activo");
+
+  document.getElementById("vet-rep-stats").innerHTML = `
+    <div class="stat-card"><div class="stat-label">Mis Revisiones</div><div class="stat-value">${revisiones.length}</div></div>
+    <div class="stat-card brown"><div class="stat-label">Alimentaciones</div><div class="stat-value">${DB.alimentacion.length}</div></div>
+    <div class="stat-card warn"><div class="stat-label">Total Servicios</div><div class="stat-value" style="font-size:1.4rem">${formatMoney(totalCosto)}</div></div>`;
+
+  document.getElementById("rep-ganado-prop-tbody").innerHTML = DB.propietarios.map(p => {
+    const l  = lotes.filter(x => x.propietarioId === p.id);
+    const an = l.reduce((s, x) => s + x.cantidad, 0);
+    const rv = revisiones.filter(r => r.propietarioId === p.id).length;
+    return `<tr><td style="font-weight:600">${p.nombre}</td><td>${l.length}</td><td style="font-weight:700">${an}</td><td><span class="badge badge-blue">${rv}</span></td></tr>`;
+  }).join("") || emptyRow(4, "Sin datos");
+
+  document.getElementById("rep-tratamientos-tbody").innerHTML = revisiones.length
+    ? revisiones.slice().reverse().map(r => `<tr>
+        <td>${formatFecha(r.fecha)}</td>
+        <td>${r.propietarioNombre}</td>
+        <td>${r.diagnostico}</td>
+      </tr>`).join("")
+    : emptyRow(3, "Sin tratamientos");
+}
+
+function enviarReporteCompleto() {
+  logHistorial("Reporte completo", `${SESION.nombre} envió reporte completo al administrador`);
+  showToast("📤 Reporte completo enviado al administrador");
+}
+
+/* ── MIS SERVICIOS ── */
+function renderMisServicios() {
+  const lista  = getMisRevisiones();
+  const total  = lista.reduce((s, r) => s + r.costo, 0);
+  document.getElementById("mis-servicios-cobro").innerHTML = `
+    <div class="cobro-highlight" style="background:linear-gradient(135deg,var(--marron),var(--marron-claro)); margin-bottom:20px;">
+      <div class="label">Total de Mis Servicios a Cobrar</div>
+      <div class="amount">${formatMoney(total)}</div>
+      <div class="formula">${lista.length} servicio(s) registrado(s) — El administrador gestiona el pago</div>
+    </div>`;
+  document.getElementById("servicios-tbody").innerHTML = lista.length
+    ? lista.slice().reverse().map(r => `<tr>
+        <td>${formatFecha(r.fecha)}</td>
+        <td>${r.propietarioNombre}</td>
+        <td>${r.diagnostico}</td>
+        <td style="font-weight:700;color:var(--success)">${formatMoney(r.costo)}</td>
+      </tr>`).join("")
+    : emptyRow(4, "Sin servicios registrados");
+}
+
+/* ── INIT ── */
+function inicializar() {
+  renderDashboard();
+  fillSelectLotes("v-lote");
+  fillSelectLotes("a-lote");
+  document.getElementById("v-fecha").value = hoy();
+
+  document.querySelectorAll(".nav-item[data-nav]").forEach(item => {
+    item.addEventListener("click", () => {
+      const id = item.dataset.nav;
+      if (id === "dashboard")   { renderDashboard(); }
+      if (id === "ganado")      { renderGanado(); }
+      if (id === "control-vet") { fillSelectLotes("v-lote"); renderMisRevisiones(); }
+      if (id === "alimentacion"){ fillSelectLotes("a-lote"); renderAlimHist(); }
+      if (id === "mis-reportes"){ renderMisReportes(); }
+      if (id === "mis-servicios"){ renderMisServicios(); }
+    });
+  });
+}
+
+inicializar();
+</script>
+
+</body>
+</html>

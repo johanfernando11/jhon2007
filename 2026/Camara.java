@@ -5,7 +5,7 @@ public class Camara extends Producto {
     private String modelo;
 
     public Camara(int numero, String marca, String modelo) {
-        super(numero);
+        super(numero, modelo, numero, numero);
         this.marca = marca;
         this.modelo = modelo;
     }

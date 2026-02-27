@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<!--
+  SIGEGAN – Sistema Integral de Gestión Ganadera
+  index.html – Pantalla de Inicio de Sesión
+  Redirige al dashboard correcto según el rol del usuario.
+-->
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIGEGAN – Inicio de Sesión</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ===================================================
+     PANTALLA DE LOGIN
+=================================================== -->
+<div class="login-page">
+  <div class="login-container">
+
+    <!-- Logo y nombre del sistema -->
+    <div class="login-logo">
+      <span class="logo-icon">🐄</span>
+      <h1>SIGEGAN</h1>
+      <p>Sistema Integral de Gestión Ganadera</p>
+    </div>
+
+    <!-- Formulario de acceso -->
+    <form id="login-form" autocomplete="off">
+
+      <div class="login-form-group">
+        <label for="inp-usuario">Usuario</label>
+        <input
+          type="text"
+          id="inp-usuario"
+          placeholder="Ingrese su usuario"
+          autocomplete="username"
+          required
+        >
+      </div>
+
+      <div class="login-form-group">
+        <label for="inp-clave">Contraseña</label>
+        <input
+          type="password"
+          id="inp-clave"
+          placeholder="••••••••"
+          autocomplete="current-password"
+          required
+        >
+      </div>
+
+      <!-- Mensaje de error de validación -->
+      <div class="login-error" id="login-error">
+        ⚠ Usuario o contraseña incorrectos. Verifique sus datos.
+      </div>
+
+      <button type="submit" class="login-btn">
+        Ingresar al Sistema →
+      </button>
+
+    </form>
+
+    <!-- Credenciales de demostración -->
+    <div class="login-hint">
+      <p>Accesos de prueba — haz clic para autocompletar:</p>
+      <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;">
+        <button class="hint-badge" onclick="autoLogin('admin','admin123')">
+          <span class="dot dot-admin"></span> Administrador
+        </button>
+        <button class="hint-badge" onclick="autoLogin('propietario1','prop123')">
+          <span class="dot dot-prop"></span> Propietario 1
+        </button>
+        <button class="hint-badge" onclick="autoLogin('propietario2','prop456')">
+          <span class="dot dot-prop"></span> Propietario 2
+        </button>
+        <button class="hint-badge" onclick="autoLogin('veterinario','vet123')">
+          <span class="dot dot-vet"></span> Veterinario
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================================================
+     SCRIPTS
+=================================================== -->
+<script src="script.js"></script>
+<script>
+  // Si ya hay sesión activa, redirige directamente al dashboard correcto
+  (function redirigirSiSesionActiva() {
+    const sesion = getSesion();
+    if (sesion) {
+      const rutas = { administrador: "admin.html", propietario: "propietario.html", veterinario: "veterinario.html" };
+      window.location.href = rutas[sesion.rol] || "index.html";
+    }
+  })();
+
+  // Manejo del formulario de login
+  document.getElementById("login-form").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const usuario = document.getElementById("inp-usuario").value.trim();
+    const clave   = document.getElementById("inp-clave").value.trim();
+    const error   = document.getElementById("login-error");
+
+    if (!usuario || !clave) {
+      error.classList.add("show");
+      error.textContent = "⚠ Todos los campos son obligatorios.";
+      return;
+    }
+
+    const sesion = iniciarSesion(usuario, clave);
+    if (!sesion) {
+      error.classList.add("show");
+      return;
+    }
+
+    // Login exitoso: redirige según rol
+    error.classList.remove("show");
+    logHistorial("Inicio de sesión", `${sesion.nombre} ingresó al sistema`);
+    const rutas = { administrador: "admin.html", propietario: "propietario.html", veterinario: "veterinario.html" };
+    window.location.href = rutas[sesion.rol];
+  });
+
+  // Autocompletar credenciales al hacer clic en los badges
+  function autoLogin(user, pass) {
+    document.getElementById("inp-usuario").value = user;
+    document.getElementById("inp-clave").value   = pass;
+    document.getElementById("login-error").classList.remove("show");
+  }
+
+  // Enter también envía el formulario
+  document.addEventListener("keydown", e => {
+    if (e.key === "Enter") document.getElementById("login-form").dispatchEvent(new Event("submit"));
+  });
+</script>
+
+</body>
+</html>

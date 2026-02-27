@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<!--
+  SIGEGAN – Sistema Integral de Gestión Ganadera
+  admin.html – Dashboard del Administrador
+  Acceso total: usuarios, propietarios, ganado, cobros, reportes, historial.
+-->
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIGEGAN – Administrador</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app-layout">
+
+  <!-- ══════════════════════════════════════
+       SIDEBAR – ADMINISTRADOR
+  ══════════════════════════════════════ -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-name"><span>🐄</span> SIGEGAN</div>
+      <div class="brand-sub">Gestión Ganadera</div>
+    </div>
+
+    <!-- Perfil del usuario activo -->
+    <div class="sidebar-user">
+      <div class="user-avatar avatar-admin" id="user-avatar-initials">A</div>
+      <div class="user-info-sidebar">
+        <div class="name" id="sidebar-username">Administrador</div>
+        <div class="role-tag">Control Total del Sistema</div>
+      </div>
+    </div>
+
+    <!-- Navegación -->
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Principal</div>
+      <div class="nav-item active" data-nav="dashboard">
+        <span class="nav-icon">📊</span><span>Dashboard</span>
+      </div>
+
+      <div class="nav-section-title">Gestión</div>
+      <div class="nav-item" data-nav="usuarios">
+        <span class="nav-icon">👤</span><span>Usuarios</span>
+      </div>
+      <div class="nav-item" data-nav="propietarios">
+        <span class="nav-icon">🧑‍🌾</span><span>Propietarios</span>
+      </div>
+      <div class="nav-item" data-nav="veterinarios">
+        <span class="nav-icon">🩺</span><span>Veterinarios</span>
+      </div>
+
+      <div class="nav-section-title">Ganado</div>
+      <div class="nav-item" data-nav="ingreso">
+        <span class="nav-icon">➕</span><span>Ingreso de Ganado</span>
+      </div>
+      <div class="nav-item" data-nav="salida">
+        <span class="nav-icon">➖</span><span>Salida de Ganado</span>
+      </div>
+      <div class="nav-item" data-nav="lotes">
+        <span class="nav-icon">🐄</span><span>Lotes Activos</span>
+      </div>
+
+      <div class="nav-section-title">Control</div>
+      <div class="nav-item" data-nav="actividad-vet">
+        <span class="nav-icon">💉</span><span>Actividad Veterinaria</span>
+      </div>
+      <div class="nav-item" data-nav="alimentacion">
+        <span class="nav-icon">🌾</span><span>Alimentación</span>
+      </div>
+
+      <div class="nav-section-title">Finanzas</div>
+      <div class="nav-item" data-nav="cobros">
+        <span class="nav-icon">💰</span><span>Cobros a Propietarios</span>
+      </div>
+      <div class="nav-item" data-nav="pagos-vet">
+        <span class="nav-icon">💵</span><span>Pagos al Veterinario</span>
+      </div>
+
+      <div class="nav-section-title">Sistema</div>
+      <div class="nav-item" data-nav="reportes">
+        <span class="nav-icon">📋</span><span>Reportes</span>
+      </div>
+      <div class="nav-item" data-nav="historial">
+        <span class="nav-icon">🕓</span><span>Historial de Cambios</span>
+      </div>
+      <div class="nav-item" data-nav="configuracion">
+        <span class="nav-icon">⚙️</span><span>Configuración</span>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button id="btn-logout" class="btn-logout">
+        <span>⏻</span> Cerrar Sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- ══════════════════════════════════════
+       CONTENIDO PRINCIPAL
+  ══════════════════════════════════════ -->
+  <main class="main-content">
+
+    <!-- Top bar -->
+    <div class="top-bar">
+      <div>
+        <div class="top-bar-title" id="top-title">Dashboard</div>
+        <div class="top-bar-sub">Administrador — Control total del sistema</div>
+      </div>
+      <div class="top-bar-right">
+        <button class="menu-toggle" id="menu-toggle">☰</button>
+        <div class="top-user-chip">
+          <span>🧑‍💼</span>
+          <span id="topbar-name">Admin</span>
+          <span class="role-badge role-admin" id="topbar-role">Admin</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-area">
+
+      <!-- ─────────────────────────────────
+           SECCIÓN: DASHBOARD
+      ───────────────────────────────── -->
+      <div class="page-section active" id="sec-dashboard">
+        <div class="section-header">
+          <h2>📊 Dashboard General</h2>
+          <p>Resumen completo del estado de la hacienda</p>
+        </div>
+
+        <!-- Stats principales -->
+        <div class="cards-grid" id="admin-stats-grid">
+          <!-- Se renderizan por JS -->
+        </div>
+
+        <!-- Barra de capacidad -->
+        <div id="admin-capacity-bar"></div>
+
+        <!-- Últimos lotes activos -->
+        <div class="card">
+          <div class="card-header">
+            <h3>🐄 Lotes Activos</h3>
+            <button class="btn btn-sm btn-secondary" onclick="mostrarSeccion('ingreso')">+ Nuevo Ingreso</button>
+          </div>
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Lote</th><th>Propietario</th><th>Cantidad</th><th>Ingreso</th><th>Días</th><th>Estado</th></tr></thead>
+                <tbody id="dash-lotes-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actividad reciente -->
+        <div class="card mt-4">
+          <div class="card-header"><h3>🕓 Actividad Reciente</h3></div>
+          <div id="dash-actividad-reciente"></div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────
+           SECCIÓN: USUARIOS
+      ───────────────────────────────── -->
+      <div class="page-section" id="sec-usuarios">
+        <div class="section-header">
+          <h2>👤 Gestión de Usuarios</h2>
+          <p>Administración de accesos al sistema</p>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>➕ Registrar Nuevo Usuario</h3></div>
+          <div class="card-body">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Nombre Completo</label>
+                <input type="text" id="u-nombre" placeholder="Ej. Juan Pérez">
+              </div>
+              <div class="form-group">
+                <label>Usuario (login)</label>
+                <input type="text" id="u-usuario" placeholder="usuario123">
+              </div>
+              <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" id="u-clave" placeholder="••••••••">
+              </div>
+              <div class="form-group">
+                <label>Rol</label>
+                <select id="u-rol">
+                  <option value="administrador">Administrador</option>
+                  <option value="propietario">Propietario</option>
+                  <option value="veterinario">Veterinario</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-secondary btn-sm" onclick="limpiarForm(['u-nombre','u-usuario','u-clave'])">Limpiar</button>
+              <button class="btn btn-primary btn-sm" onclick="registrarUsuario()">💾 Guardar Usuario</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>Lista de Usuarios Registrados</h3></div>
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>#</th><th>Nombre</th><th>Usuario</th><th>Rol</th><th>Estado</th></tr></thead>
+                <tbody id="usuarios-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────
+           SECCIÓN: PROPIETARIOS
+      ───────────────────────────────── -->
+      <div class="page-section" id="sec-propietarios">
+        <div class="section-header">
+          <h2>🧑‍🌾 Gestión de Propietarios</h2>
+          <p>Directorio de clientes de la hacienda</p>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>➕ Registrar Propietario</h3></div>
+          <div class="card-body">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Nombre Completo</label>
+                <input type="text" id="p-nombre" placeholder="Ej. Carlos Ramírez">
+              </div>
+              <div class="form-group">
+                <label>Documento de Identidad</label>
+                <input type="text" id="p-doc" placeholder="12345678">
+              </div>
+              <div class="form-group">
+                <label>Teléfono</label>
+                <input type="text" id="p-tel" placeholder="310-000-0000">
+              </div>
+              <div class="form-group">
+                <label>Correo Electrónico</label>
+                <input type="email" id="p-email" placeholder="correo@ejemplo.com">
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-secondary btn-sm" onclick="limpiarForm(['p-nombre','p-doc','p-tel','p-email'])">Limpiar</button>
+              <button class="btn btn-primary btn-sm" onclick="registrarPropietario()">💾 Guardar Propietario</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3>Propietarios Registrados</h3>
+            <input type="text" id="prop-search" placeholder="Buscar..." oninput="filtrarPropietarios()" style="padding:6px 12px;border:1.5px solid var(--gris-borde);border-radius:6px;font-size:0.85rem;width:200px;">
+          </div>
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>#</th><th>Nombre</th><th>Documento</th><th>Teléfono</th><th>Correo</th><th>Lotes</th></tr></thead>
+                <tbody id="propietarios-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────
+           SECCIÓN: VETERINARIOS
+      ───────────────────────────────── -->
+      <div class="page-section" id="sec-veterinarios">
+        <div class="section-header">
+          <h2>🩺 Veterinarios del Sistema</h2>
+          <p>Médicos veterinarios registrados y sus actividades</p>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>Veterinarios Registrados</h3></div>
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>#</th><th>Nombre</th><th>Usuario</th><th>Servicios</th><th>Total a Pagar</th></tr></thead>
+                <tbody id="veterinarios-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────
+           SECCIÓN: INGRESO DE GANADO
+      ───────────────────────────────── -->
+      <div class="page-section" id="sec-ingreso">
+        <div class="section-header">
+          <h2>➕ Ingreso de Ganado</h2>
+          <p>Registro de entrada de animales a la hacienda</p>
+        </div>
+        <div id="ingreso-capacity"></div>
+        <div class="card">
+          <div class="card-header"><h3>📝 Registrar Nuevo Ingreso</h3></div>
+          <div class="card-body">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Propietario</label>
+                <select id="i-propietario"></select>
+              </div>
+              <div class="form-group">
+                <label>Cantidad de Animales</label>
+                <input type="number" id="i-cantidad" placeholder="0" min="1" oninput="checkCapacidad()">
+              </div>
+              <div class="form-group">
+                <label>Fecha de Ingreso</label>
+                <input type="date" id="i-fecha">
+              </div>
+            </div>
+            <div class="login-error" id="i-cap-error" style="margin-top:12px;"></div>
+            <div class="form-actions">
+              <button class="btn btn-secondary btn-sm" onclick="limpiarForm(['i-cantidad'])">Limpiar</button>
+              <button class="btn btn-primary btn-sm" onclick="registrarIngreso()">✅ Registrar Ingreso</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────
+           SECCIÓN: SALIDA DE GANADO
+      ───────────────────────────────── -->
+      <div class="page-section" id="sec-salida">
+        <div class="section-header">
+          <h2>➖ Salida de Ganado</h2>
+          <p>Registro de salida y generación de cobro automático</p>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>📝 Registrar Salida</h3></div>
+          <div class="card-body">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Seleccionar Lote</label>
+                <select id="s-lote" onchange="calcularCobroPreview()"></select>
+              </div>
+              <div class="form-group">
+                <label>Fecha de Salida</label>
+                <input type="date" id="s-fecha" onchange="calcularCobroPreview()">
+              </div>
+            </div>
+            <div id="cobro-preview" style="display:none; margin-top:16px;"></div>
+            <div class="form-actions">
+              <button class="btn btn-primary btn-sm" onclick="confirmarSalida()">✅ Confirmar Salida</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>Historial de Salidas</h3></div>
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Lote</th><th>Propietario</th><th>Cantidad</th><th>Días</th><th>Total Cobrado</th><th>Fecha Salida</th></tr></thead>
+                <tbody id="salidas-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────
+           SECCIÓN: LOTES ACTIVOS
+      ───────────────────────────────── -->
+      <div class="page-section" id="sec-lotes">
+        <div class="section-header">
+          <h2>🐄 Lotes Activos en la Hacienda</h2>
+          <p>Todos los animales actualmente en las instalaciones</p>
+        </div>
+        <div id="lotes-capacity"></div>
+        <div class="card">
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Lote #</th><th>Propietario</th><th>Cantidad</th><th>Fecha Ingreso</th><th>Días en Hacienda</th><th>Cobro Estimado</th></tr></thead>
+                <tbody id="lotes-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────
+           SECCIÓN: ACTIVIDAD VETERINARIA
+      ───────────────────────────────── -->
+      <div class="page-section" id="sec-actividad-vet">
+        <div class="section-header">
+          <h2>💉 Actividad Veterinaria</h2>
+          <p>Revisiones y tratamientos registrados por el veterinario</p>
+        </div>
+        <div class="card">
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Fecha</th><th>Lote</th><th>Propietario</th><th>Diagnóstico</th><th>Tratamiento</th><th>Veterinario</th><th>Costo</th></tr></thead>
+                <tbody id="act-vet-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────
+           SECCIÓN: ALIMENTACIÓN
+      ───────────────────────────────── -->
+      <div class="page-section" id="sec-alimentacion">
+        <div class="section-header">
+          <h2>🌾 Registro de Alimentación</h2>
+          <p>Historial de suministro de alimentos al ganado</p>
+        </div>
+        <div class="card">
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Fecha</th><th>Lote</th><th>Propietario</th><th>Tipo Alimento</th><th>Cantidad</th></tr></thead>
+                <tbody id="alim-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────
+           SECCIÓN: COBROS A PROPIETARIOS
+      ───────────────────────────────── -->
+      <div class="page-section" id="sec-cobros">
+        <div class="section-header">
+          <h2>💰 Cobros a Propietarios</h2>
+          <p>Resumen de cobros generados por servicios de la hacienda</p>
+        </div>
+        <div class="cards-grid" id="cobros-stats"></div>
+        <div class="card">
+          <div class="card-header"><h3>Detalle de Cobros por Propietario</h3></div>
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Propietario</th><th>Lotes Activos</th><th>Animales</th><th>Cobro Estimado Activo</th><th>Total Cobrado</th></tr></thead>
+                <tbody id="cobros-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────
+           SECCIÓN: PAGOS AL VETERINARIO
+      ───────────────────────────────── -->
+      <div class="page-section" id="sec-pagos-vet">
+        <div class="section-header">
+          <h2>💵 Pagos al Veterinario</h2>
+          <p>Servicios prestados y montos pendientes de pago</p>
+        </div>
+        <div class="card">
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Fecha</th><th>Propietario Atendido</th><th>Servicio / Diagnóstico</th><th>Veterinario</th><th>Costo Servicio</th></tr></thead>
+                <tbody id="pagos-vet-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="card mt-4">
+          <div class="card-header"><h3>Resumen de Pagos Pendientes</h3></div>
+          <div class="card-body">
+            <div id="pagos-vet-resumen"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────
+           SECCIÓN: REPORTES
+      ───────────────────────────────── -->
+      <div class="page-section" id="sec-reportes">
+        <div class="section-header">
+          <h2>📋 Reportes del Sistema</h2>
+          <p>Informes generales de operación y finanzas</p>
+        </div>
+        <div class="cards-grid" id="reporte-stats"></div>
+        <div class="cards-grid-2">
+          <div class="card">
+            <div class="card-header"><h3>🐄 Ganado por Propietario</h3></div>
+            <div class="card-body" style="padding:0">
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>Propietario</th><th>Lotes</th><th>Animales</th><th>Ingresado</th></tr></thead>
+                  <tbody id="rep-ganado-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>💰 Resumen Financiero</h3></div>
+            <div class="card-body" style="padding:0">
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>Concepto</th><th>Valor</th></tr></thead>
+                  <tbody id="rep-financiero-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-actions" style="border:none; padding:0; margin-top:8px;">
+          <button class="btn btn-primary" onclick="generarReporte()">📄 Generar Reporte General</button>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────
+           SECCIÓN: HISTORIAL DE CAMBIOS
+      ───────────────────────────────── -->
+      <div class="page-section" id="sec-historial">
+        <div class="section-header">
+          <h2>🕓 Historial de Cambios</h2>
+          <p>Auditoría completa de todas las acciones del sistema</p>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3>Registro de Actividad</h3>
+            <span class="text-muted" id="hist-count">0 registros</span>
+          </div>
+          <div id="historial-list"></div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────
+           SECCIÓN: CONFIGURACIÓN
+      ───────────────────────────────── -->
+      <div class="page-section" id="sec-configuracion">
+        <div class="section-header">
+          <h2>⚙️ Configuración del Sistema</h2>
+          <p>Parámetros generales de la hacienda</p>
+        </div>
+        <div class="cards-grid-2">
+          <div class="card">
+            <div class="card-header"><h3>💰 Precio por Animal / Día</h3></div>
+            <div class="card-body">
+              <p class="text-muted mb-4">Valor actual: <strong id="precio-actual">$30</strong> por animal por día</p>
+              <div class="form-grid" style="grid-template-columns:1fr auto;">
+                <div class="form-group">
+                  <label>Nuevo Precio ($)</label>
+                  <input type="number" id="cfg-precio" placeholder="30" min="1">
+                </div>
+                <div style="display:flex; align-items:flex-end;">
+                  <button class="btn btn-primary btn-sm" onclick="actualizarPrecio()">Guardar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>📦 Capacidad Máxima</h3></div>
+            <div class="card-body">
+              <p class="text-muted mb-4">Capacidad actual: <strong id="cap-actual">150</strong> animales</p>
+              <div class="form-grid" style="grid-template-columns:1fr auto;">
+                <div class="form-group">
+                  <label>Nueva Capacidad</label>
+                  <input type="number" id="cfg-capacidad" placeholder="150" min="1">
+                </div>
+                <div style="display:flex; align-items:flex-end;">
+                  <button class="btn btn-primary btn-sm" onclick="actualizarCapacidad()">Guardar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /page-area -->
+  </main>
+</div>
+
+<!-- Toast notifications -->
+<div class="toast-container" id="toast-container"></div>
+
+<script src="script.js"></script>
+<script>
+/* ============================================================
+   admin.js – Lógica del panel de administrador
+============================================================ */
+
+// Protege la página: solo administradores pueden entrar
+const SESION = protegerPagina("administrador");
+
+// Muestra el nombre del admin en sidebar y topbar
+if (SESION) {
+  document.getElementById("sidebar-username").textContent = SESION.nombre;
+  document.getElementById("topbar-name").textContent = SESION.nombre;
+  document.getElementById("user-avatar-initials").textContent = SESION.nombre.charAt(0).toUpperCase();
+}
+
+/* ── HELPERS ── */
+function limpiarForm(ids) { ids.forEach(id => { const el = document.getElementById(id); if (el) el.value = ""; }); }
+
+function emptyRow(cols, msg) {
+  return `<tr><td colspan="${cols}" style="text-align:center; padding:32px; color:var(--gris-claro);">${msg}</td></tr>`;
+}
+
+/* ── RENDERIZADO DEL DASHBOARD ── */
+function renderDashboard() {
+  const activos   = totalAnimalesActivos();
+  const disponible = DB.capacidadMax - activos;
+  const totalCobrado = DB.salidas.reduce((s, x) => s + x.total, 0);
+  const cobroEstimado = DB.lotes.filter(l => l.estado === "activo").reduce((s, l) =>
+    s + l.cantidad * calcDias(l.fechaIngreso) * DB.precioAnimalDia, 0);
+
+  document.getElementById("admin-stats-grid").innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">Animales Activos</div>
+      <div class="stat-value">${activos}</div>
+      <div class="stat-sub">en la hacienda</div>
+      <span class="stat-icon">🐄</span>
+    </div>
+    <div class="stat-card brown">
+      <div class="stat-label">Disponibles</div>
+      <div class="stat-value">${disponible}</div>
+      <div class="stat-sub">de ${DB.capacidadMax} máximo</div>
+      <span class="stat-icon">📦</span>
+    </div>
+    <div class="stat-card info">
+      <div class="stat-label">Propietarios</div>
+      <div class="stat-value">${DB.propietarios.length}</div>
+      <div class="stat-sub">registrados</div>
+      <span class="stat-icon">🧑‍🌾</span>
+    </div>
+    <div class="stat-card warn">
+      <div class="stat-label">Cobro Estimado Activo</div>
+      <div class="stat-value" style="font-size:1.4rem;">${formatMoney(cobroEstimado)}</div>
+      <div class="stat-sub">Total histórico: ${formatMoney(totalCobrado)}</div>
+      <span class="stat-icon">💰</span>
+    </div>`;
+
+  renderCapacityBar("admin-capacity-bar");
+
+  // Tabla de lotes activos en dashboard
+  const lotesActivos = DB.lotes.filter(l => l.estado === "activo");
+  document.getElementById("dash-lotes-tbody").innerHTML = lotesActivos.length
+    ? lotesActivos.map(l => `<tr>
+        <td><span class="badge badge-green">Lote #${l.id}</span></td>
+        <td>${l.propietarioNombre}</td>
+        <td style="font-weight:700">${l.cantidad}</td>
+        <td>${formatFecha(l.fechaIngreso)}</td>
+        <td><span class="badge badge-brown">${calcDias(l.fechaIngreso)} días</span></td>
+        <td><span class="badge badge-green">Activo</span></td>
+      </tr>`).join("")
+    : emptyRow(6, "🐄 No hay lotes activos en este momento");
+
+  // Actividad reciente (últimas 5)
+  const recientes = DB.historial.slice(0, 5);
+  document.getElementById("dash-actividad-reciente").innerHTML = recientes.length
+    ? recientes.map(h => `
+        <div class="history-item">
+          <div class="history-dot"></div>
+          <div class="history-content">
+            <div class="history-action">${h.accion}</div>
+            <div class="history-detail">${h.detalle}</div>
+          </div>
+          <div class="history-date">${h.fecha}</div>
+        </div>`).join("")
+    : `<div class="empty-state"><div class="empty-icon">🕓</div><p>Sin actividad registrada</p></div>`;
+}
+
+/* ── USUARIOS ── */
+function renderUsuarios() {
+  document.getElementById("usuarios-tbody").innerHTML = DB.usuarios.map(u => {
+    const badgeClass = { administrador: "badge-green", propietario: "badge-brown", veterinario: "badge-blue" }[u.rol] || "badge-green";
+    return `<tr>
+      <td class="text-muted mono">${u.id}</td>
+      <td style="font-weight:600">${u.nombre}</td>
+      <td class="mono">${u.usuario}</td>
+      <td><span class="badge ${badgeClass}">${u.rol}</span></td>
+      <td><span class="badge badge-green">Activo</span></td>
+    </tr>`;
+  }).join("");
+}
+
+function registrarUsuario() {
+  const nom = document.getElementById("u-nombre").value.trim();
+  const usr = document.getElementById("u-usuario").value.trim();
+  const clv = document.getElementById("u-clave").value.trim();
+  const rol = document.getElementById("u-rol").value;
+  if (!nom || !usr || !clv) return showToast("Completa todos los campos", "warn");
+  if (DB.usuarios.find(u => u.usuario === usr)) return showToast("Ese usuario ya existe", "error");
+  DB.usuarios.push({ id: Date.now(), nombre: nom, usuario: usr, clave: clv, rol });
+  guardarDB();
+  logHistorial("Registro de usuario", `Nuevo usuario: ${usr} (${rol})`);
+  renderUsuarios();
+  limpiarForm(["u-nombre","u-usuario","u-clave"]);
+  showToast("✅ Usuario registrado correctamente");
+}
+
+/* ── PROPIETARIOS ── */
+function renderPropietarios(filtro = "") {
+  const lista = filtro
+    ? DB.propietarios.filter(p => p.nombre.toLowerCase().includes(filtro.toLowerCase()) || p.doc.includes(filtro))
+    : DB.propietarios;
+  document.getElementById("propietarios-tbody").innerHTML = lista.length
+    ? lista.map(p => {
+        const lotes = DB.lotes.filter(l => l.propietarioId === p.id && l.estado === "activo").length;
+        return `<tr>
+          <td class="text-muted mono">${p.id}</td>
+          <td style="font-weight:600">${p.nombre}</td>
+          <td class="mono">${p.doc}</td>
+          <td>${p.tel}</td>
+          <td>${p.email}</td>
+          <td><span class="badge badge-blue">${lotes}</span></td>
+        </tr>`;
+      }).join("")
+    : emptyRow(6, "Sin propietarios registrados");
+}
+
+function registrarPropietario() {
+  const nom   = document.getElementById("p-nombre").value.trim();
+  const doc   = document.getElementById("p-doc").value.trim();
+  const tel   = document.getElementById("p-tel").value.trim();
+  const email = document.getElementById("p-email").value.trim();
+  if (!nom || !doc) return showToast("Nombre y documento son obligatorios", "warn");
+  const id = DB.propietarios.length + 1;
+  DB.propietarios.push({ id, nombre: nom, doc, tel, email });
+  guardarDB();
+  logHistorial("Registro de propietario", `Nuevo propietario: ${nom}`);
+  renderPropietarios();
+  limpiarForm(["p-nombre","p-doc","p-tel","p-email"]);
+  showToast("✅ Propietario registrado");
+}
+
+function filtrarPropietarios() {
+  renderPropietarios(document.getElementById("prop-search").value);
+}
+
+/* ── VETERINARIOS ── */
+function renderVeterinarios() {
+  const vets = DB.usuarios.filter(u => u.rol === "veterinario");
+  document.getElementById("veterinarios-tbody").innerHTML = vets.length
+    ? vets.map(v => {
+        const servicios = DB.veterinario.filter(r => r.veterinario === v.nombre).length;
+        const total = DB.veterinario.filter(r => r.veterinario === v.nombre).reduce((s, r) => s + r.costo, 0);
+        return `<tr>
+          <td class="text-muted mono">${v.id}</td>
+          <td style="font-weight:600">${v.nombre}</td>
+          <td class="mono">${v.usuario}</td>
+          <td><span class="badge badge-blue">${servicios}</span></td>
+          <td style="font-weight:700; color:var(--success)">${formatMoney(total)}</td>
+        </tr>`;
+      }).join("")
+    : emptyRow(5, "Sin veterinarios registrados");
+}
+
+/* ── INGRESO DE GANADO ── */
+function checkCapacidad() {
+  const cant = parseInt(document.getElementById("i-cantidad").value) || 0;
+  const disponible = DB.capacidadMax - totalAnimalesActivos();
+  const err = document.getElementById("i-cap-error");
+  if (cant > disponible) {
+    err.textContent = `⚠ No hay capacidad suficiente. Disponible: ${disponible} animales.`;
+    err.classList.add("show");
+  } else {
+    err.classList.remove("show");
+  }
+}
+
+function registrarIngreso() {
+  const propId = parseInt(document.getElementById("i-propietario").value);
+  const cant   = parseInt(document.getElementById("i-cantidad").value);
+  const fecha  = document.getElementById("i-fecha").value;
+  if (!propId) return showToast("Selecciona un propietario", "warn");
+  if (!cant || cant < 1) return showToast("Ingresa una cantidad válida", "warn");
+  if (!fecha) return showToast("Selecciona la fecha de ingreso", "warn");
+  if (cant > DB.capacidadMax - totalAnimalesActivos()) return showToast("Sin capacidad disponible", "error");
+  const prop = DB.propietarios.find(p => p.id === propId);
+  const id   = DB.lotes.reduce((m, l) => Math.max(m, l.id), 0) + 1;
+  DB.lotes.push({ id, propietarioId: propId, propietarioNombre: prop.nombre, cantidad: cant, fechaIngreso: fecha, estado: "activo" });
+  guardarDB();
+  logHistorial("Ingreso de ganado", `Lote #${id}: ${cant} animales de ${prop.nombre}`);
+  limpiarForm(["i-cantidad"]);
+  renderDashboard();
+  showToast(`✅ Ingreso registrado — Lote #${id}`);
+}
+
+/* ── SALIDA DE GANADO ── */
+function calcularCobroPreview() {
+  const loteId = parseInt(document.getElementById("s-lote").value);
+  const fecha  = document.getElementById("s-fecha").value;
+  const el     = document.getElementById("cobro-preview");
+  if (!loteId || !fecha) { el.style.display = "none"; return; }
+  const lote = DB.lotes.find(l => l.id === loteId);
+  if (!lote) return;
+  const dias  = calcDias(lote.fechaIngreso, fecha);
+  const total = lote.cantidad * dias * DB.precioAnimalDia;
+  el.style.display = "block";
+  el.innerHTML = `
+    <div class="cobro-highlight">
+      <div class="label">Total a Cobrar — ${lote.propietarioNombre}</div>
+      <div class="amount">${formatMoney(total)}</div>
+      <div class="formula">${lote.cantidad} animales × ${dias} días × ${formatMoney(DB.precioAnimalDia)}/día = ${formatMoney(total)}</div>
+    </div>`;
+}
+
+function confirmarSalida() {
+  const loteId = parseInt(document.getElementById("s-lote").value);
+  const fecha  = document.getElementById("s-fecha").value;
+  if (!loteId || !fecha) return showToast("Selecciona lote y fecha", "warn");
+  const idx   = DB.lotes.findIndex(l => l.id === loteId);
+  if (idx === -1) return;
+  const lote  = DB.lotes[idx];
+  const dias  = calcDias(lote.fechaIngreso, fecha);
+  const total = lote.cantidad * dias * DB.precioAnimalDia;
+  DB.salidas.push({ id: Date.now(), loteId, propietarioId: lote.propietarioId, propietarioNombre: lote.propietarioNombre, cantidad: lote.cantidad, dias, preciodia: DB.precioAnimalDia, total, fechaSalida: fecha });
+  DB.lotes[idx].estado = "inactivo";
+  guardarDB();
+  logHistorial("Salida de ganado", `Lote #${loteId} – ${lote.propietarioNombre}: ${formatMoney(total)}`);
+  renderSalidas();
+  fillSelectLotes("s-lote");
+  document.getElementById("cobro-preview").style.display = "none";
+  renderDashboard();
+  showToast(`✅ Salida registrada — ${formatMoney(total)}`);
+}
+
+function renderSalidas() {
+  document.getElementById("salidas-tbody").innerHTML = DB.salidas.length
+    ? DB.salidas.slice().reverse().map(s => `<tr>
+        <td><span class="badge badge-brown">Lote #${s.loteId}</span></td>
+        <td>${s.propietarioNombre}</td>
+        <td>${s.cantidad}</td>
+        <td><span class="badge badge-blue">${s.dias} días</span></td>
+        <td style="font-weight:700; color:var(--success)">${formatMoney(s.total)}</td>
+        <td>${formatFecha(s.fechaSalida)}</td>
+      </tr>`).join("")
+    : emptyRow(6, "Sin salidas registradas");
+}
+
+/* ── LOTES ACTIVOS ── */
+function renderLotes() {
+  renderCapacityBar("lotes-capacity");
+  const activos = DB.lotes.filter(l => l.estado === "activo");
+  document.getElementById("lotes-tbody").innerHTML = activos.length
+    ? activos.map(l => {
+        const dias   = calcDias(l.fechaIngreso);
+        const cobro  = l.cantidad * dias * DB.precioAnimalDia;
+        return `<tr>
+          <td><span class="badge badge-green">#${l.id}</span></td>
+          <td style="font-weight:600">${l.propietarioNombre}</td>
+          <td style="font-weight:700">${l.cantidad}</td>
+          <td>${formatFecha(l.fechaIngreso)}</td>
+          <td><span class="badge badge-brown">${dias} días</span></td>
+          <td style="font-weight:700; color:var(--success)">${formatMoney(cobro)}</td>
+        </tr>`;
+      }).join("")
+    : emptyRow(6, "🐄 No hay lotes activos");
+}
+
+/* ── ACTIVIDAD VETERINARIA ── */
+function renderActividadVet() {
+  document.getElementById("act-vet-tbody").innerHTML = DB.veterinario.length
+    ? DB.veterinario.slice().reverse().map(r => `<tr>
+        <td>${formatFecha(r.fecha)}</td>
+        <td><span class="badge badge-green">Lote #${r.loteId}</span></td>
+        <td>${r.propietarioNombre}</td>
+        <td>${r.diagnostico}</td>
+        <td>${r.tratamiento}</td>
+        <td>${r.veterinario}</td>
+        <td style="font-weight:700">${formatMoney(r.costo)}</td>
+      </tr>`).join("")
+    : emptyRow(7, "Sin registros veterinarios");
+}
+
+/* ── ALIMENTACIÓN ── */
+function renderAlimentacion() {
+  document.getElementById("alim-tbody").innerHTML = DB.alimentacion.length
+    ? DB.alimentacion.slice().reverse().map(r => `<tr>
+        <td>${formatFecha(r.fecha)}</td>
+        <td><span class="badge badge-green">Lote #${r.loteId}</span></td>
+        <td>${r.propietarioNombre}</td>
+        <td>${r.tipo}</td>
+        <td class="mono">${r.cantidad} ${r.unidad}</td>
+      </tr>`).join("")
+    : emptyRow(5, "Sin registros de alimentación");
+}
+
+/* ── COBROS ── */
+function renderCobros() {
+  const totalCobrado = DB.salidas.reduce((s, x) => s + x.total, 0);
+  const cobroEstimado = DB.lotes.filter(l => l.estado === "activo")
+    .reduce((s, l) => s + l.cantidad * calcDias(l.fechaIngreso) * DB.precioAnimalDia, 0);
+  document.getElementById("cobros-stats").innerHTML = `
+    <div class="stat-card"><div class="stat-label">Cobro Estimado (Activos)</div><div class="stat-value" style="font-size:1.5rem">${formatMoney(cobroEstimado)}</div><div class="stat-sub">en curso</div><span class="stat-icon">📊</span></div>
+    <div class="stat-card brown"><div class="stat-label">Total Cobrado Histórico</div><div class="stat-value" style="font-size:1.5rem">${formatMoney(totalCobrado)}</div><div class="stat-sub">desde el inicio</div><span class="stat-icon">💰</span></div>`;
+  document.getElementById("cobros-tbody").innerHTML = DB.propietarios.map(p => {
+    const lotesActivos = DB.lotes.filter(l => l.propietarioId === p.id && l.estado === "activo");
+    const animales     = lotesActivos.reduce((s, l) => s + l.cantidad, 0);
+    const estimado     = lotesActivos.reduce((s, l) => s + l.cantidad * calcDias(l.fechaIngreso) * DB.precioAnimalDia, 0);
+    const cobrado      = DB.salidas.filter(s => s.propietarioId === p.id).reduce((s, x) => s + x.total, 0);
+    return `<tr>
+      <td style="font-weight:600">${p.nombre}</td>
+      <td><span class="badge badge-blue">${lotesActivos.length}</span></td>
+      <td>${animales}</td>
+      <td style="color:var(--warning); font-weight:700">${formatMoney(estimado)}</td>
+      <td style="color:var(--success); font-weight:700">${formatMoney(cobrado)}</td>
+    </tr>`;
+  }).join("");
+}
+
+/* ── PAGOS AL VETERINARIO ── */
+function renderPagosVet() {
+  document.getElementById("pagos-vet-tbody").innerHTML = DB.veterinario.length
+    ? DB.veterinario.slice().reverse().map(r => `<tr>
+        <td>${formatFecha(r.fecha)}</td>
+        <td>${r.propietarioNombre}</td>
+        <td>${r.diagnostico}</td>
+        <td>${r.veterinario}</td>
+        <td style="font-weight:700; color:var(--success)">${formatMoney(r.costo)}</td>
+      </tr>`).join("")
+    : emptyRow(5, "Sin servicios veterinarios registrados");
+  const totalVet = DB.veterinario.reduce((s, r) => s + r.costo, 0);
+  document.getElementById("pagos-vet-resumen").innerHTML = `
+    <div class="cobro-highlight" style="background: linear-gradient(135deg, var(--marron), var(--marron-claro));">
+      <div class="label">Total Pendiente de Pago al Veterinario</div>
+      <div class="amount">${formatMoney(totalVet)}</div>
+      <div class="formula">${DB.veterinario.length} servicio(s) registrado(s)</div>
+    </div>`;
+}
+
+/* ── REPORTES ── */
+function renderReportes() {
+  const activos = totalAnimalesActivos();
+  const totalCobrado = DB.salidas.reduce((s, x) => s + x.total, 0);
+  const totalVet = DB.veterinario.reduce((s, r) => s + r.costo, 0);
+  document.getElementById("reporte-stats").innerHTML = `
+    <div class="stat-card"><div class="stat-label">Total Animales Activos</div><div class="stat-value">${activos}</div></div>
+    <div class="stat-card brown"><div class="stat-label">Total Cobrado</div><div class="stat-value" style="font-size:1.4rem">${formatMoney(totalCobrado)}</div></div>
+    <div class="stat-card info"><div class="stat-label">Pagos Veterinario</div><div class="stat-value" style="font-size:1.4rem">${formatMoney(totalVet)}</div></div>
+    <div class="stat-card warn"><div class="stat-label">Lotes Activos</div><div class="stat-value">${DB.lotes.filter(l=>l.estado==="activo").length}</div></div>`;
+  document.getElementById("rep-ganado-tbody").innerHTML = DB.propietarios.map(p => {
+    const lotes   = DB.lotes.filter(l => l.propietarioId === p.id && l.estado === "activo");
+    const animales = lotes.reduce((s, l) => s + l.cantidad, 0);
+    return `<tr><td style="font-weight:600">${p.nombre}</td><td>${lotes.length}</td><td style="font-weight:700">${animales}</td><td>${lotes.map(l=>formatFecha(l.fechaIngreso)).join(", ") || "—"}</td></tr>`;
+  }).join("") || emptyRow(4, "Sin datos");
+  document.getElementById("rep-financiero-tbody").innerHTML = `
+    <tr><td>Total cobrado a propietarios</td><td style="font-weight:700;color:var(--success)">${formatMoney(totalCobrado)}</td></tr>
+    <tr><td>Total a pagar al veterinario</td><td style="font-weight:700;color:var(--warning)">${formatMoney(totalVet)}</td></tr>
+    <tr style="background:var(--beige)"><td style="font-weight:700">Margen estimado</td><td style="font-weight:800;color:var(--verde-oscuro)">${formatMoney(totalCobrado - totalVet)}</td></tr>`;
+}
+
+function generarReporte() {
+  logHistorial("Reporte generado", "Reporte general del sistema exportado");
+  showToast("📄 Reporte generado y registrado en el historial");
+}
+
+/* ── HISTORIAL ── */
+function renderHistorial() {
+  document.getElementById("hist-count").textContent = `${DB.historial.length} registros`;
+  document.getElementById("historial-list").innerHTML = DB.historial.length
+    ? DB.historial.map(h => `
+        <div class="history-item">
+          <div class="history-dot"></div>
+          <div class="history-content">
+            <div class="history-action">${h.accion}</div>
+            <div class="history-detail">Por: ${h.usuario} — ${h.detalle}</div>
+          </div>
+          <div class="history-date">${h.fecha}</div>
+        </div>`).join("")
+    : `<div class="empty-state"><div class="empty-icon">🕓</div><p>Sin actividad registrada</p></div>`;
+}
+
+/* ── CONFIGURACIÓN ── */
+function actualizarPrecio() {
+  const nuevo = parseFloat(document.getElementById("cfg-precio").value);
+  if (!nuevo || nuevo < 1) return showToast("Precio inválido", "warn");
+  DB.precioAnimalDia = nuevo;
+  guardarDB();
+  logHistorial("Configuración", `Precio por animal/día actualizado a ${formatMoney(nuevo)}`);
+  document.getElementById("precio-actual").textContent = formatMoney(nuevo);
+  limpiarForm(["cfg-precio"]);
+  showToast("✅ Precio actualizado");
+}
+
+function actualizarCapacidad() {
+  const nueva = parseInt(document.getElementById("cfg-capacidad").value);
+  if (!nueva || nueva < 1) return showToast("Capacidad inválida", "warn");
+  DB.capacidadMax = nueva;
+  guardarDB();
+  logHistorial("Configuración", `Capacidad máxima actualizada a ${nueva} animales`);
+  document.getElementById("cap-actual").textContent = nueva;
+  limpiarForm(["cfg-capacidad"]);
+  showToast("✅ Capacidad actualizada");
+}
+
+/* ── INIT ── */
+function inicializar() {
+  renderDashboard();
+  renderUsuarios();
+  renderPropietarios();
+  renderVeterinarios();
+  renderSalidas();
+  renderActividadVet();
+  renderAlimentacion();
+  fillSelectPropietarios("i-propietario");
+  fillSelectLotes("s-lote");
+  document.getElementById("i-fecha").value = hoy();
+  document.getElementById("s-fecha").value = hoy();
+  document.getElementById("precio-actual").textContent = formatMoney(DB.precioAnimalDia);
+  document.getElementById("cap-actual").textContent = DB.capacidadMax;
+
+  // Render bajo demanda para secciones lazy
+  document.querySelectorAll(".nav-item[data-nav]").forEach(item => {
+    item.addEventListener("click", () => {
+      const id = item.dataset.nav;
+      if (id === "dashboard")     renderDashboard();
+      if (id === "propietarios")  renderPropietarios();
+      if (id === "veterinarios")  renderVeterinarios();
+      if (id === "ingreso")       { renderCapacityBar("ingreso-capacity"); fillSelectPropietarios("i-propietario"); }
+      if (id === "salida")        { fillSelectLotes("s-lote"); renderSalidas(); }
+      if (id === "lotes")         renderLotes();
+      if (id === "actividad-vet") renderActividadVet();
+      if (id === "alimentacion")  renderAlimentacion();
+      if (id === "cobros")        renderCobros();
+      if (id === "pagos-vet")     renderPagosVet();
+      if (id === "reportes")      renderReportes();
+      if (id === "historial")     renderHistorial();
+    });
+  });
+}
+
+inicializar();
+</script>
+
+</body>
+</html>
